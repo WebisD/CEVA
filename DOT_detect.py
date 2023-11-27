@@ -17,6 +17,7 @@ class DOTDetect:
         if not ret:
             return None, None, None
         
+        original_frame = frame.copy()
         results = self.model(frame)[0]
         all_bboxes = []
 
@@ -30,7 +31,6 @@ class DOTDetect:
 
         # Convert the image from OpenCV BGR format to PIL RGB format
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        original_frame = frame.copy()
         # Resize
         frame = cv2.resize(frame, (self.resized_video_width, self.resized_video_height))
         # Convert the image to PIL format

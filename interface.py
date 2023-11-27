@@ -94,7 +94,7 @@ class App(customtkinter.CTk):
     def play_video_event(self):
 
         DD = DOTDetect(self.resized_video_width, self.resized_video_height)
-
+        DC = DOTCrop()
         # Calculate the delay between each frame
         delay = 1/self.video_fps
 
@@ -111,15 +111,27 @@ class App(customtkinter.CTk):
                 # CHAMEM A FUNÇÂO DE VCS AQUI
                 # EX: DOTcrop.reorient_dot()
                 #
-                img_crop = Image.open(self.dot_path)
-                width, height = img_crop.size
-                custom_width, custom_height = utils.custom_resize(width, height, self.canvas_crop_width, self.canvas_crop_height)
-                resized_image = img_crop.resize((custom_width, custom_height))
-                img_crop = ImageTk.PhotoImage(resized_image)
+                if len(all_bboxes) > 0:
+                    rotated_dot = DC.cropDot(original_frame, all_bboxes)
+                    width, height = rotated_dot.size
+                    custom_width, custom_height = utils.custom_resize(width, height, self.canvas_crop_width, self.canvas_crop_height)
+                    resized_image = rotated_dot.resize((custom_width, custom_height))
+                    img_crop = ImageTk.PhotoImage(resized_image)
+
+                    self.crop_frame.image = img_crop
+                    self.canvas_crop.create_image(0, 0, anchor='nw', image=img_crop)
+                    self.crop_frame.update()
+
                 
-                self.crop_frame.image = img_crop
-                self.canvas_crop.create_image(0, 0, anchor='nw', image=img_crop)
-                self.crop_frame.update()
+                #img_crop = Image.open(self.dot_path)
+                #width, height = img_crop.size
+                #custom_width, custom_height = utils.custom_resize(width, height, self.canvas_crop_width, self.canvas_crop_height)
+                #resized_image = img_crop.resize((custom_width, custom_height))
+                #img_crop = ImageTk.PhotoImage(resized_image)
+                
+                #self.crop_frame.image = img_crop
+                #self.canvas_crop.create_image(0, 0, anchor='nw', image=img_crop)
+                #self.crop_frame.update()
 
                 # Update frame
                 self.video_frame.image = image
